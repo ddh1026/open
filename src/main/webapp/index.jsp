@@ -127,7 +127,9 @@ desired effect
 			          <ul class="treeview-menu">
 			            <li><a href="#view/base/binary.jsp"><i class="fa fa-circle-o"></i>二值化</a></li>
 			            <li><a href="#view/base/adaptiveBinary.jsp"><i class="fa fa-circle-o"></i>自适用二值化</a></li>
+			            <li><a href="#view/base/zxing.jsp"><i class="fa fa-circle-o"></i>zxing识别二维码</a></li>
 			            <li><a href="#view/base/gaussian.jsp"><i class="fa fa-circle-o"></i> 模糊</a></li>
+			            <li><a href="#view/base/sharpness.jsp"><i class="fa fa-circle-o"></i> 图像锐化</a></li>
 			            <li><a href="#view/base/resize.jsp"><i class="fa fa-circle-o"></i> 缩放</a></li>
 			            <li><a href="#view/base/erosion_dilation.jsp"><i class="fa fa-circle-o"></i>腐蚀膨胀</a></li>
 			            <li><a href="#view/base/morphologyEx.jsp"><i class="fa fa-circle-o"></i>腐蚀膨胀进阶</a></li>

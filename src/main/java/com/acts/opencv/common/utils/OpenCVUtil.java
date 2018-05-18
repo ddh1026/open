@@ -1,6 +1,5 @@
 package com.acts.opencv.common.utils;
 
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.IOException;
@@ -19,7 +18,7 @@ public class OpenCVUtil {
 	public static BufferedImage covertMat2Buffer(Mat mat) throws IOException {
 		long time1 = new Date().getTime();
 		// Mat 转byte数组
-		BufferedImage originalB = (BufferedImage) toBufferedImage(mat);
+		BufferedImage originalB = toBufferedImage(mat);
 		long time3 = new Date().getTime();
 		System.out.println("保存读取方法2转=" + (time3 - time1));
 		return originalB;
@@ -48,7 +47,7 @@ public class OpenCVUtil {
 		return mob.toArray();
 	}
 
-	public static Image toBufferedImage(Mat m) {
+	public static BufferedImage toBufferedImage(Mat m) {
 		int type = BufferedImage.TYPE_BYTE_GRAY;
 		if (m.channels() > 1) {
 			type = BufferedImage.TYPE_3BYTE_BGR;

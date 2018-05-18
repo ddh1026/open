@@ -1,7 +1,11 @@
 package com.acts.opencv.base;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletResponse;
@@ -29,6 +33,14 @@ import com.acts.opencv.common.utils.Constants;
 import com.acts.opencv.common.utils.OpenCVUtil;
 import com.acts.opencv.common.web.BaseController;
 import com.acts.opencv.demo.DemoController;
+import com.google.zxing.Binarizer;
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.DecodeHintType;
+import com.google.zxing.LuminanceSource;
+import com.google.zxing.MultiFormatReader;
+import com.google.zxing.Result;
+import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
+import com.google.zxing.common.HybridBinarizer;
 
 
 @Controller
@@ -179,6 +191,99 @@ public class BaseMethodController extends BaseController {
 	}
 
 	/**
+	 * 自适用二值化+zxing识别条形码
+	 * @Author 王嵩
+	 * @param response
+	 * @param imagefile
+	 * @param binaryType 二值化类型
+	 * @param blockSize 附近区域面积
+	 * @param constantC 它只是一个常数，从平均值或加权平均值中减去的常数
+	 * @Date 2018年5月17日
+	 * 更新日志
+	 * 2018年5月17日 王嵩  首次创建
+	 */
+	@RequestMapping(value = "zxing")
+	public void zxing(HttpServletResponse response, String imagefile, Integer adaptiveMethod, Integer binaryType,
+			Integer blockSize, Double constantC) {
+		//
+		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+		logger.info("\n 自适用二值化方法");
+
+		// 灰度化
+		// Imgproc.cvtColor(source, destination, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
+		String sourcePath = Constants.PATH + imagefile;
+		logger.info("url==============" + sourcePath);
+		// 加载为灰度图显示
+		Mat source = Highgui.imread(sourcePath, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
+		Mat destination = new Mat(source.rows(), source.cols(), source.type());
+		logger.info("binaryType:{},blockSize:{},constantC:{}", binaryType, blockSize, constantC);
+		switch (adaptiveMethod) {
+		case 0:
+			adaptiveMethod = Imgproc.ADAPTIVE_THRESH_MEAN_C;
+			break;
+		case 1:
+			adaptiveMethod = Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C;
+			break;
+		}
+
+		switch (binaryType) {
+		case 0:
+			binaryType = Imgproc.THRESH_BINARY;
+			break;
+		case 1:
+			binaryType = Imgproc.THRESH_BINARY_INV;
+			break;
+		case 2:
+			binaryType = Imgproc.THRESH_TRUNC;
+			break;
+		case 3:
+			binaryType = Imgproc.THRESH_TOZERO;
+			break;
+		case 4:
+			binaryType = Imgproc.THRESH_TOZERO_INV;
+			break;
+		default:
+			break;
+		}
+		// Imgproc.adaptiveThreshold(source, destination, 255, adaptiveMethod, binaryType, blockSize, constantC);
+		Imgproc.threshold(source, destination, 190, 255, Imgproc.THRESH_BINARY);
+		String result = parseCode(destination);
+
+		renderString(response, result);
+
+	}
+
+	private static String parseCode(Mat mat) {
+		String resultText = "无法识别！！！";
+		try {
+			MultiFormatReader formatReader = new MultiFormatReader();
+			// if (!file.exists()) {
+			// System.out.println("nofile");
+			// return;
+			// }
+			// BufferedImage image = ImageIO.read(file);
+
+			BufferedImage image = OpenCVUtil.toBufferedImage(mat);
+			LuminanceSource source = new BufferedImageLuminanceSource(image);
+			Binarizer binarizer = new HybridBinarizer(source);
+			BinaryBitmap binaryBitmap = new BinaryBitmap(binarizer);
+
+			Map<DecodeHintType, String> hints = new HashMap<DecodeHintType, String>();
+			hints.put(DecodeHintType.CHARACTER_SET, "UTF-8");
+
+			Result result = formatReader.decode(binaryBitmap, hints);
+			StringBuffer sbuffer = new StringBuffer();
+			sbuffer.append("解析结果 = " + result.toString() + "\n");
+			sbuffer.append("二维码格式类型 = " + result.getBarcodeFormat() + "\n");
+			sbuffer.append("二维码文本内容 = " + result.getText() + "\n");
+			resultText = sbuffer.toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return resultText;
+	}
+
+	/**
 	 * 高斯滤波方法测试
 	 * 创建者 Songer
 	 * 创建时间	2018年3月9日
@@ -197,6 +302,44 @@ public class BaseMethodController extends BaseController {
 		Imgproc.GaussianBlur(source, destination,
 				new Size(2 * Integer.valueOf(kwidth) + 1, 2 * Integer.valueOf(kheight) + 1),
 				Integer.valueOf(sigmaX), Integer.valueOf(sigmaY));
+		try {
+			byte[] imgebyte = OpenCVUtil.covertMat2Byte1(destination);
+			renderImage(response, imgebyte);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 图像锐化操作
+	 * @Author 王嵩
+	 * @param response
+	 * @param imagefile
+	 * @param ksize 中值滤波内核size
+	 * @param alpha 控制图层src1的透明度
+	 * @param beta 控制图层src2的透明度
+	 * @param gamma gamma越大合并的影像越明亮 void
+	 * @Date 2018年5月18日
+	 * 更新日志
+	 * 2018年5月18日 王嵩  首次创建
+	 *
+	 */
+	@RequestMapping(value = "sharpness")
+	public void sharpness(HttpServletResponse response, String imagefile, int ksize, double alpha, double beta,
+			double gamma) {
+		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+		logger.info("\n 锐化操作");
+
+		String sourcePath = Constants.PATH + imagefile;
+		logger.info("url==============" + sourcePath);
+		Mat source = Highgui.imread(sourcePath, Highgui.CV_LOAD_IMAGE_COLOR);
+		Mat destination = new Mat(source.rows(), source.cols(), source.type());
+		// 先进行中值滤波操作
+		Imgproc.medianBlur(source, destination, 2 * ksize + 1);
+		// 通过合并图层的方式进行效果增强 alpha控制src1的透明度，beta控制src2 的透明图；gamma越大合并的影像越明亮
+		// public static void addWeighted(Mat src1, double alpha, Mat src2, double beta, double gamma, Mat dst)
+		Core.addWeighted(source, alpha, destination, beta, 0, destination);
+
 		try {
 			byte[] imgebyte = OpenCVUtil.covertMat2Byte1(destination);
 			renderImage(response, imgebyte);
@@ -630,6 +773,7 @@ public class BaseMethodController extends BaseController {
 		Core.normalize(destination, destination, 0, 255, Core.NORM_MINMAX, -1, new Mat());
 		// minMaxLoc(imagematch, minVal, maxVal2, minLoc, maxLoc01, new Mat());
 		MinMaxLocResult minmaxLoc = Core.minMaxLoc(destination);
+		logger.info("相似值=================：最大：" + minmaxLoc.maxVal + "    最小：" + minmaxLoc.minVal);
 		Point matchLoc = new Point();
 		switch (method) {
 		case 0:
@@ -695,7 +839,7 @@ public class BaseMethodController extends BaseController {
 		logger.info("\n 灰度直方图测试");
 		String sourcePath = Constants.PATH + imagefile;
 		Mat source = Highgui.imread(sourcePath, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
-		java.util.List<Mat> images = new ArrayList<>();
+		List<Mat> images = new ArrayList<Mat>();
 		images.add(source);
 		MatOfInt channels = new MatOfInt(0); // 图像通道数，0表示只有一个通道
 		MatOfInt histSize = new MatOfInt(cols); // CV_8U类型的图片范围是0~255，共有256个灰度级
