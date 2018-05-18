@@ -14,6 +14,7 @@ SpringMVC+AdminLTE 2+maven。考虑到之前demo测试，要么都是生成图�
 2. 执行readme中需要的本地maven依赖jar
 3. 如果需要使用tesseract方式识别页码，注意tessdata放到tomcat的bin目录下
 4. 参照项目中JAVA集成OpenCV，配置linux或windows环境
+5. 数据库配置目前用不到，可以直接去掉spring-context.xml中关于数据源的配置，也可以随便指定个连接数据库地址
 
 #### 主要内容
 1. 图像二值化
