@@ -75,7 +75,7 @@
                   <div class="box-header with-border">
                     <h4 class="box-title">
                       <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-                        图片缩放方法说明
+                        颜色检测说明
                       </a>
                     </h4>
                   </div>
