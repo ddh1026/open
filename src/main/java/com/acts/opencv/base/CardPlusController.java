@@ -33,6 +33,7 @@ import com.acts.opencv.common.web.BaseController;
 import com.acts.opencv.demo.DemoController;
 
 
+
 @Controller
 @RequestMapping(value = "cardPlus")
 public class CardPlusController extends BaseController {
@@ -231,7 +232,7 @@ public class CardPlusController extends BaseController {
 	 *
 	 */
 	public Mat getGrayHistogram(Mat img) {
-		java.util.List<Mat> images = new ArrayList<>();
+		List<Mat> images = new ArrayList<Mat>();
 		images.add(img);
 		MatOfInt channels = new MatOfInt(0); // 图像通道数，0表示只有一个通道
 		MatOfInt histSize = new MatOfInt(256); // CV_8U类型的图片范围是0~255，共有256个灰度级

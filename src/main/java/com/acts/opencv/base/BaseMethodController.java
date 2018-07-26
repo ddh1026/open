@@ -349,6 +349,43 @@ public class BaseMethodController extends BaseController {
 	}
 
 	/**
+	 * 漫水填充
+	 * @Author 王嵩
+	 * @param response
+	 * @param imagefile
+	 * @param ksize
+	 * @param alpha
+	 * @param beta
+	 * @param gamma void
+	 * @Date 2018年5月24日
+	 * 更新日志
+	 * 2018年5月24日 王嵩  首次创建
+	 *
+	 */
+	@RequestMapping(value = "floodfill")
+	public void floodfill(HttpServletResponse response, String imagefile, double graysize, double lodiff,
+			double updiff, int flag) {
+		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+		logger.info("\n 锐化操作");
+
+		String sourcePath = Constants.PATH + imagefile;
+		logger.info("url==============" + sourcePath);
+		Mat source = Highgui.imread(sourcePath, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
+		// Mat mask = new Mat(source.rows() + 2, source.cols() + 2, source.type());
+		Mat mask = new Mat();
+		Rect rect = new Rect();
+		Imgproc.floodFill(source, mask, new Point(0, 0), new Scalar(graysize), rect, new Scalar(lodiff), new Scalar(
+				updiff), flag);
+
+		try {
+			byte[] imgebyte = OpenCVUtil.covertMat2Byte1(source);
+			renderImage(response, imgebyte);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
 	 * 图片缩放方法测试
 	 * 创建者 Songer
 	 * 创建时间	2018年3月15日
@@ -733,7 +770,7 @@ public class BaseMethodController extends BaseController {
 			logger.info("轮廓数量已经超出，默认显示所有轮廓，轮廓数量：{}", contours.size());
 			contourNum = -1;
 		}
-		Imgproc.drawContours(destination, contours, contourNum, new Scalar(0, 255, 0), 2);
+		Imgproc.drawContours(destination, contours, contourNum, new Scalar(0, 255, 0), 1);
 		try {
 			byte[] imgebyte = OpenCVUtil.covertMat2Byte1(destination);
 			renderImage(response, imgebyte);
@@ -894,4 +931,121 @@ public class BaseMethodController extends BaseController {
 		}
 
 	}
+
+	// public void qrCode(HttpServletResponse response, String imagefile, Integer binaryType, Double thresh, Double maxval) {
+	// System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+	// String sourcePath = Constants.PATH + imagefile;
+	// // 加载为灰度图显示
+	// Mat imageGray = Highgui.imread(sourcePath, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
+	// Mat image = new Mat(imageGray.rows(), imageGray.cols(), imageGray.type());
+	// Mat imageGuussian = new Mat(imageGray.rows(), imageGray.cols(), imageGray.type());
+	// Mat imageSobelX,imageSobelY,imageSobelOut;
+	// imageGray.copyTo(image);
+	//
+	// // imshow("Source Image",image);
+	//
+	// GaussianBlur(imageGray,imageGuussian,Size(3,3),0);
+	// Imgproc.GaussianBlur(imageGray, imageGuussian,new Size(5, 5),
+	// Integer.valueOf(sigmaX), Integer.valueOf(sigmaY));
+	//
+	// //水平和垂直方向灰度图像的梯度和,使用Sobel算子
+	// Mat imageX16S,imageY16S;
+	// Sobel(imageGuussian,imageX16S,CV_16S,1,0,3,1,0,4);
+	// Sobel(imageGuussian,imageY16S,CV_16S,0,1,3,1,0,4);
+	// convertScaleAbs(imageX16S,imageSobelX,1,0);
+	// convertScaleAbs(imageY16S,imageSobelY,1,0);
+	// imageSobelOut=imageSobelX+imageSobelY;
+	// imshow("XY方向梯度和",imageSobelOut);
+	// Mat srcImg =imageSobelOut;
+	// //宽高扩充，非必须，特定的宽高可以提高傅里叶运算效率
+	// Mat padded;
+	// int opWidth = getOptimalDFTSize(srcImg.rows);
+	// int opHeight = getOptimalDFTSize(srcImg.cols);
+	// copyMakeBorder(srcImg, padded, 0, opWidth-srcImg.rows, 0, opHeight-srcImg.cols, BORDER_CONSTANT, Scalar::all(0));
+	// Mat planes[] = {Mat_<float>(padded), Mat::zeros(padded.size(), CV_32F)};
+	// Mat comImg;
+	// //通道融合，融合成一个2通道的图像
+	// merge(planes,2,comImg);
+	// dft(comImg, comImg);
+	// split(comImg, planes);
+	// magnitude(planes[0], planes[1], planes[0]);
+	// Mat magMat = planes[0];
+	// magMat += Scalar::all(1);
+	// log(magMat, magMat); //对数变换，方便显示
+	// magMat = magMat(Rect(0, 0, magMat.cols & -2, magMat.rows & -2));
+	// //以下把傅里叶频谱图的四个角落移动到图像中心
+	// int cx = magMat.cols/2;
+	// int cy = magMat.rows/2;
+	// Mat q0(magMat, Rect(0, 0, cx, cy));
+	// Mat q1(magMat, Rect(0, cy, cx, cy));
+	// Mat q2(magMat, Rect(cx, cy, cx, cy));
+	// Mat q3(magMat, Rect(cx, 0, cx, cy));
+	// Mat tmp;
+	// q0.copyTo(tmp);
+	// q2.copyTo(q0);
+	// tmp.copyTo(q2);
+	// q1.copyTo(tmp);
+	// q3.copyTo(q1);
+	// tmp.copyTo(q3);
+	// normalize(magMat, magMat, 0, 1, CV_MINMAX);
+	// Mat magImg(magMat.size(), CV_8UC1);
+	// magMat.convertTo(magImg,CV_8UC1,255,0);
+	// imshow("傅里叶频谱", magImg);
+	// //HoughLines查找傅里叶频谱的直线，该直线跟原图的一维码方向相互垂直
+	// threshold(magImg,magImg,180,255,CV_THRESH_BINARY);
+	// imshow("二值化", magImg);
+	// vector<Vec2f> lines;
+	// float pi180 = (float)CV_PI/180;
+	// Mat linImg(magImg.size(),CV_8UC3);
+	// HoughLines(magImg,lines,1,pi180,100,0,0);
+	// int numLines = lines.size();
+	// float theta;
+	// for(int l=0; l<numLines; l++)
+	// {
+	// float rho = lines[l][0];
+	// theta = lines[l][1];
+	// float aa=(theta/CV_PI)*180;
+	// Point pt1, pt2;
+	// double a = cos(theta), b = sin(theta);
+	// double x0 = a*rho, y0 = b*rho;
+	// pt1.x = cvRound(x0 + 1000*(-b));
+	// pt1.y = cvRound(y0 + 1000*(a));
+	// pt2.x = cvRound(x0 - 1000*(-b));
+	// pt2.y = cvRound(y0 - 1000*(a));
+	// line(linImg,pt1,pt2,Scalar(255,0,0),3,8,0);
+	// }
+	// imshow("Hough直线",linImg);
+	// //校正角度计算
+	// float angelD=180*theta/CV_PI-90;
+	// Point center(image.cols/2, image.rows/2);
+	// Mat rotMat = getRotationMatrix2D(center,angelD,1.0);
+	// Mat imageSource = Mat::ones(image.size(),CV_8UC3);
+	// warpAffine(image,imageSource,rotMat,image.size(),1,0,Scalar(255,255,255));//仿射变换校正图像
+	// imshow("角度校正",imageSource);
+	// //Zbar一维码识别
+	// ImageScanner scanner;
+	// scanner.set_config(ZBAR_NONE, ZBAR_CFG_ENABLE, 1);
+	// int width1 = imageSource.cols;
+	// int height1 = imageSource.rows;
+	// uchar *raw = (uchar *)imageSource.data;
+	// Image imageZbar(width1, height1, "Y800", raw, width1 * height1);
+	// scanner.scan(imageZbar); //扫描条码
+	// Image::SymbolIterator symbol = imageZbar.symbol_begin();
+	// if(imageZbar.symbol_begin()==imageZbar.symbol_end())
+	// {
+	// cout<<"查询条码失败，请检查图片！"<<endl;
+	// }
+	// for(;symbol != imageZbar.symbol_end();++symbol)
+	// {
+	// cout<<"类型："<<endl<<symbol->get_type_name()<<endl<<endl;
+	// cout<<"条码："<<endl<<symbol->get_data()<<endl<<endl;
+	// }
+	// namedWindow("Source Window",0);
+	// imshow("Source Window",imageSource);
+	// waitKey();
+	// imageZbar.set_data(NULL,0);
+	// return 0;
+	//
+	// }
+
 }

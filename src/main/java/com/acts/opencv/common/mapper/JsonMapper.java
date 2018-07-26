@@ -15,8 +15,8 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -29,6 +29,7 @@ import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 /**
  * 简单封装Jackson，实现JSON String<->Java Object的Mapper. 封装不同的输出风格,
  * 使用不同的builder函数创建实例.
+ * 创建者 张志朋
  * 创建时间	2017年9月28日
  *
  */

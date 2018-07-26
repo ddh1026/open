@@ -1,3 +1,6 @@
+/**
+ * Copyright &copy; 2016-2020 公众学业 All rights reserved.
+ */
 package com.acts.opencv.common.mapper.adapters;
 
 import java.util.ArrayList;
@@ -12,7 +15,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)  
 public class MapConvertor {
 	
-    private final List<MapEntry> entries = new ArrayList<MapEntry>();  
+    private List<MapEntry> entries = new ArrayList<MapEntry>();  
   
     public void addEntry(MapEntry entry) {  
         entries.add(entry);  

@@ -81,7 +81,7 @@
 	    
 		    console.log("init",[xsize,ysize]);
 		    $("#oldimg").Jcrop({
-		      maxSize:[100,62],
+		      maxSize:[100,100],
 		      onChange: updatePreview,
 		      onSelect: updatePreview,
 		      aspectRatio: xsize / ysize
@@ -163,7 +163,7 @@
 /*   width: 250px;
   height: 170px; */
   width: 100px;
-  height: 62px; 
+  height: 100px; 
   overflow: hidden;
 }
 

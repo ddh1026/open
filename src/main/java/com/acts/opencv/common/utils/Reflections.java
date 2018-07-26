@@ -11,23 +11,22 @@ import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
-
 /**
  * 反射工具类.
  * 提供调用getter/setter方法, 访问私有变量, 调用私有方法, 获取泛型类型Class, 被AOP过的真实类等工具函数.
- * 创建者	Songer
+ * 创建者	张志朋
  * 创建时间	2016年8月1日
  *
  */
 @SuppressWarnings("rawtypes")
 public class Reflections {
-
+	
 	private static final String SETTER_PREFIX = "set";
 
 	private static final String GETTER_PREFIX = "get";
 
 	private static final String CGLIB_CLASS_SEPARATOR = "$$";
-
+	
 	private static Logger logger = LoggerFactory.getLogger(Reflections.class);
 
 	/**
@@ -136,7 +135,7 @@ public class Reflections {
 
 	/**
 	 * 循环向上转型, 获取对象的DeclaredField, 并强制设置为可访问.
-	 *
+	 * 
 	 * 如向上转型到Object仍无法找到, 返回null.
 	 */
 	public static Field getAccessibleField(final Object obj, final String fieldName) {
@@ -159,7 +158,7 @@ public class Reflections {
 	 * 循环向上转型, 获取对象的DeclaredMethod,并强制设置为可访问.
 	 * 如向上转型到Object仍无法找到, 返回null.
 	 * 匹配函数名+参数类型。
-	 *
+	 * 
 	 * 用于方法需要被多次调用的情况. 先使用本函数先取得Method,然后调用Method.invoke(Object obj, Object... args)
 	 */
 	public static Method getAccessibleMethod(final Object obj, final String methodName,
@@ -184,7 +183,7 @@ public class Reflections {
 	 * 循环向上转型, 获取对象的DeclaredMethod,并强制设置为可访问.
 	 * 如向上转型到Object仍无法找到, 返回null.
 	 * 只匹配函数名。
-	 *
+	 * 
 	 * 用于方法需要被多次调用的情况. 先使用本函数先取得Method,然后调用Method.invoke(Object obj, Object... args)
 	 */
 	public static Method getAccessibleMethodByName(final Object obj, final String methodName) {
@@ -240,7 +239,7 @@ public class Reflections {
 	/**
 	 * 通过反射, 获得Class定义中声明的父类的泛型参数的类型.
 	 * 如无法找到, 返回Object.class.
-	 *
+	 * 
 	 * 如public UserDao extends HibernateDao<User,Long>
 	 *
 	 * @param clazz clazz The class to introspect
@@ -270,7 +269,7 @@ public class Reflections {
 
 		return (Class) params[index];
 	}
-
+	
 	public static Class<?> getUserClass(Object instance) {
 		Assert.notNull(instance, "Instance must not be null");
 		Class clazz = instance.getClass();
@@ -283,7 +282,7 @@ public class Reflections {
 		return clazz;
 
 	}
-
+	
 	/**
 	 * 将反射时的checked exception转换为unchecked exception.
 	 */

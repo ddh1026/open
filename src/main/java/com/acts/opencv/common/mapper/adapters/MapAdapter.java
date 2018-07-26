@@ -1,3 +1,6 @@
+/**
+ * Copyright &copy; 2016-2020 公众学业 All rights reserved.
+ */
 package com.acts.opencv.common.mapper.adapters;
 
 import java.util.HashMap;

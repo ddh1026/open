@@ -130,6 +130,7 @@ desired effect
 			            <li><a href="#view/base/zxing.jsp"><i class="fa fa-circle-o"></i>zxing识别二维码</a></li>
 			            <li><a href="#view/base/gaussian.jsp"><i class="fa fa-circle-o"></i> 模糊</a></li>
 			            <li><a href="#view/base/sharpness.jsp"><i class="fa fa-circle-o"></i> 图像锐化</a></li>
+			            <li><a href="#view/base/floodfill.jsp"><i class="fa fa-circle-o"></i> 漫水填充</a></li>
 			            <li><a href="#view/base/resize.jsp"><i class="fa fa-circle-o"></i> 缩放</a></li>
 			            <li><a href="#view/base/erosion_dilation.jsp"><i class="fa fa-circle-o"></i>腐蚀膨胀</a></li>
 			            <li><a href="#view/base/morphologyEx.jsp"><i class="fa fa-circle-o"></i>腐蚀膨胀进阶</a></li>
@@ -156,7 +157,7 @@ desired effect
 			            <li><a href="#view/card/pagecheck.jsp"><i class="fa fa-circle-o"></i>页码识别</a></li>
 			           <!--  <li><a href="#view/card/marktest.jsp"><i class="fa fa-circle-o"></i>定位点优化</a></li> -->
 			            <li><a href="#view/card/rectification.jsp"><i class="fa fa-circle-o"></i>图像矫正</a></li>
-			            <!--<li><a href="#view/card/realTest.jsp"><i class="fa fa-circle-o"></i>校正真实测试</a></li> -->
+			            <li><a href="#view/card/realTest.jsp"><i class="fa fa-circle-o"></i>校正真实测试</a></li>
 			          </ul>
 			        </li>
 					
