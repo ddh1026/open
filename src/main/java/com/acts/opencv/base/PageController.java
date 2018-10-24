@@ -26,13 +26,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.acts.opencv.common.utils.Constants;
 import com.acts.opencv.common.utils.OpenCVUtil;
 import com.acts.opencv.common.web.BaseController;
-import com.acts.opencv.demo.DemoController;
 
 
 @Controller
 @RequestMapping(value = "page")
 public class PageController extends BaseController {
-	private static final Logger logger = LoggerFactory.getLogger(DemoController.class);
+	private static final Logger logger = LoggerFactory.getLogger(PageController.class);
 
 	/**
 	 * 答题卡识别优化

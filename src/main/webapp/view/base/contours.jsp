@@ -109,7 +109,7 @@
 				                <tr>
 				                  <td>1.</td>
 				                  <td>Mat src</td>
-				                  <td>源文件Mat对象8bit 单通道二值化图像</td>
+				                  <td>源文件Mat对象8bit 单通道二值化图像,注意：查找轮廓方法因为有内置的边缘检测，所以是会更改原图的，因此使用的时候，可以clone一个使用</td>
 				                </tr>
 				                <tr>
 				                  <td>2.</td>
@@ -177,7 +177,7 @@
                   		<input id="contourNum" data-slider-id='ex1Slider' type="text" data-slider-min="-1" data-slider-max="100" data-slider-step="1" data-slider-value="-1"/>
 				  </td>
                   <td>
-                  	   <a class="btn btn-info" id="contours"><i class="fa fa-object-ungroup"></i>查找颜色</a>
+                  	   <a class="btn btn-info" id="contours"><i class="fa fa-object-ungroup"></i>查找轮廓</a>
 			          <a class="btn btn-info" id="reset"><i class="fa fa-refresh"></i>重置</a>
 			       </td>
                 </tr>

@@ -158,6 +158,7 @@ desired effect
 			           <!--  <li><a href="#view/card/marktest.jsp"><i class="fa fa-circle-o"></i>定位点优化</a></li> -->
 			            <li><a href="#view/card/rectification.jsp"><i class="fa fa-circle-o"></i>图像矫正</a></li>
 			            <li><a href="#view/card/realTest.jsp"><i class="fa fa-circle-o"></i>校正真实测试</a></li>
+			            <li><a href="#view/card/card2.jsp"><i class="fa fa-circle-o"></i>无定位点答题卡识别</a></li>
 			          </ul>
 			        </li>
 					
