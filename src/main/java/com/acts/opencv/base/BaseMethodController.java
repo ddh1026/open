@@ -338,7 +338,7 @@ public class BaseMethodController extends BaseController {
 		Imgproc.medianBlur(source, destination, 2 * ksize + 1);
 		// 通过合并图层的方式进行效果增强 alpha控制src1的透明度，beta控制src2 的透明图；gamma越大合并的影像越明亮
 		// public static void addWeighted(Mat src1, double alpha, Mat src2, double beta, double gamma, Mat dst)
-		Core.addWeighted(source, alpha, destination, beta, 0, destination);
+		Core.addWeighted(source, alpha, destination, beta, gamma, destination);
 
 		try {
 			byte[] imgebyte = OpenCVUtil.covertMat2Byte1(destination);

@@ -566,13 +566,16 @@ public class Card2Controller extends BaseController {
     	int studentNo = 0;
     	for (int i = 0; i < resultList.size(); i++) {
     		String result = resultList.get(i);
-			if ("A".equals(result)) {
+    		if (result.contains("A")) {
 				studentNo += 1000 * i;
-			} else if ("B".equals(result)) {
+			} 
+			if (result.contains("B")) {
 				studentNo += 100 * i;
-			} else if ("C".equals(result)) {
+			} 
+			if (result.contains("C")) {
 				studentNo += 10 * i;
-			} else if ("D".equals(result)) {
+			}
+			if (result.contains("D")) {
 				studentNo += i;
 			}
 		}
