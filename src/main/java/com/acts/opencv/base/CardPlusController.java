@@ -400,7 +400,7 @@ public class CardPlusController extends BaseController {
 	 * 图片切块
 	 * @param srcMat 传入水平或垂直投影的图片对象Mat
 	 * @param proType 传入投影Mat对象的 投影方式0：垂直投影图片,竖向切割；1：水平投影图片，横向切割
-	 * @param rowY 由于传来的是原始图片的部分切片，要计算切块的实际坐标位置需要给出切片时所在的坐标，所以需要传递横向切片的y坐标或者纵向切片的横坐标
+	 * @param rowY 由于传来的是可能是原始图片的部分切片，要计算切块的实际坐标位置需要给出切片时所在的坐标，所以需要传递横向切片的y坐标或者纵向切片的横坐标
 	 * 如当proType==0时，传入的是切片的垂直投影，那么切成块后能得出x坐标及块宽高度，但是实际y坐标需要加上原切片的y坐标值，所以rowXY为切片的y坐标点，
 	 * 同理当proType==1时，rowXY应该为x坐标
 	 * @return
