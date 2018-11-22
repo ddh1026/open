@@ -9,7 +9,7 @@
 	<link rel="stylesheet" href="${ctxStatic}/plugins/iCheck/minimal/blue.css?t=${version}">
     <script type="text/javascript">
 		$(function(){
-			var baseImageFile = "/statics/sourceimage/card111.png"//ada.png
+			var baseImageFile = "/statics/sourceimage/ada.png"//
 			var newImagePath = "/statics/distimage/lena.png"
 			$("#oldimg").attr("src",baseUrl+baseImageFile);
 			//$("#newimg").attr("src",baseUrl+baseImageFile); 

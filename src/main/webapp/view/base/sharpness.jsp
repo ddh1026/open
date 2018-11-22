@@ -7,7 +7,7 @@
 	<link rel="stylesheet" href="${ctxStatic}/plugins/bootstrap-slider/slider.css">
     <script type="text/javascript">
 		$(function(){
-			var baseImageFile = "/statics/sourceimage/card111.png"//ticket1.png
+			var baseImageFile = "/statics/sourceimage/ticket1.png"//
 			var newImagePath = "/statics/distimage/lena.png"
 			$("#oldimg").attr("src",baseUrl+baseImageFile);
 			//$("#newimg").attr("src",baseUrl+baseImageFile); 
