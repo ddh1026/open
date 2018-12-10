@@ -15,6 +15,7 @@ SpringMVC+AdminLTE 2+maven。考虑到之前demo测试，要么都是生成图�
 3. 如果需要使用tesseract方式识别页码，注意tessdata放到tomcat的bin目录下
 4. 参照项目中JAVA集成OpenCV，配置linux或windows环境
 5. 数据库配置目前用不到，可以直接去掉spring-context.xml中关于数据源的配置，也可以随便指定个连接数据库地址
+6. 有的小伙伴@武 在tomcat启动项目调用时会出现UnstatisfiedLinkError:no opencv_java2413 in java.library.path 异常信息，可以通过输出System.out.println(System.getProperty("java.library.path"));打印一下本地的library地址。将dll文件放到输出的地址中，如jdk的bin目录下;tomcat的bin目录等，重启tomcat就可以解决该问题。
 
 #### 主要内容
 1. 图像二值化
