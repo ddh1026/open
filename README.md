@@ -48,7 +48,5 @@ QQ 434923959
 QQ群：709883689
 另外正在陆续实现一个拍照识别答题卡的小程序，可以微信小程序搜索“扫扫阅卷”
 ####
-![输入图片说明](https://images.gitee.com/uploads/images/2018/1213/172407_43ba93c9_102358.png "121.png")
-![输入图片说明](https://images.gitee.com/uploads/images/2018/1213/172427_5101f039_102358.png "122.png")
-![输入图片说明](https://images.gitee.com/uploads/images/2018/1213/172438_2507fbde_102358.png "123.png")
-![输入图片说明](https://images.gitee.com/uploads/images/2018/1213/172448_c3cafe11_102358.png "124.png")
+![输入图片说明](https://images.gitee.com/uploads/images/2018/1213/174404_f48cb9af_102358.png "1.png")
+![输入图片说明](https://images.gitee.com/uploads/images/2018/1213/174418_43a27250_102358.png "2.png")
