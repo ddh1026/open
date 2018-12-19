@@ -366,7 +366,7 @@ public class BaseMethodController extends BaseController {
 	public void floodfill(HttpServletResponse response, String imagefile, double graysize, double lodiff,
 			double updiff, int flag) {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-		logger.info("\n 锐化操作");
+		logger.info("\n 漫水填充操作");
 
 		String sourcePath = Constants.PATH + imagefile;
 		logger.info("url==============" + sourcePath);
@@ -374,12 +374,47 @@ public class BaseMethodController extends BaseController {
 		// Mat mask = new Mat(source.rows() + 2, source.cols() + 2, source.type());
 		Mat mask = new Mat();
 		Rect rect = new Rect();
+		//简单调用方式
+//		Imgproc.floodFill(source, mask, new Point(0, 0), new Scalar(graysize));
+		
+		// 表示floodFill函数标识符低八位的连通值4、8 0-7位可以设置为4或8
+		int g_nConnectivity = 4;
+		// 中间八位部分,新的重新绘制的像素值 255，中8为8-15位，当此值不设置或为0时掩码mask会默认设置为1
+		int g_nNewMaskVal = 255;
+		/**
+		 * 漫水填充的模式:0 默认方式，既不选FLOODFILL_FIXED_RANGE又不选FLOODFILL_MASK_ONLY
+		 * FLOODFILL_FIXED_RANGE:每个像素点都将于种子点，而不是相邻点相比较。即设置此值时，
+		 * 则只有当某个相邻点与种子像素之间的差值在指定范围内才填充，否则考虑当前点与其相邻点的差是否落在制定范围
+		 * FLOODFILL_MASK_ONLY 如果设置，函数不填充原始图像，而去填充掩码图像。
+		 */
+		int g_nFillMode = 0;
+		if(flag == 0){//默认方式
+			g_nFillMode = 0;
+		}else if(flag == 1){//FLOODFILL_FIXED_RANGE方式
+			g_nFillMode = Imgproc.FLOODFILL_FIXED_RANGE;
+		}else{//FLOODFILL_MASK_ONLY方式
+			g_nFillMode = Imgproc.FLOODFILL_MASK_ONLY;
+			mask = new Mat(source.rows() + 2, source.cols() + 2, source.type());// 延展图像
+		}
+		
+
+		System.out.println(g_nNewMaskVal << 8);
+
+		int flags = g_nConnectivity | (g_nNewMaskVal << 8) | g_nFillMode;
+
+		
+		//使用mask调用方式
 		Imgproc.floodFill(source, mask, new Point(0, 0), new Scalar(graysize), rect, new Scalar(lodiff), new Scalar(
-				updiff), flag);
+				updiff), flags);
 
 		try {
-			byte[] imgebyte = OpenCVUtil.covertMat2Byte1(source);
-			renderImage(response, imgebyte);
+			if(flag==2){//FLOODFILL_MASK_ONLY方式填充的是掩码图像
+				byte[] imgebyte = OpenCVUtil.covertMat2Byte1(mask);
+				renderImage(response, imgebyte);
+			}else{
+				byte[] imgebyte = OpenCVUtil.covertMat2Byte1(source);
+				renderImage(response, imgebyte);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
