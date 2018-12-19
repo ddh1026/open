@@ -79,7 +79,7 @@
                       </a>
                     </h4>
                   </div>
-                  <div id="collapseOne" class="panel-collapse collapse"><!--class="panel-collapse collapse in"中的 in 控制展开 -->
+                  <div id="collapseOne" class="panel-collapse collapse in"><!--class="panel-collapse collapse in"中的 in 控制展开 -->
                     <div class="box-body">
                     备注知识：所谓RGB就是：红（Red）、绿（Green）、蓝（Blue）三种色光原色。RGB色彩模型的混色属于加法混色。每种原色的数值越高，色彩越明亮。 R、G、B都为0时是黑色，都为255时是白色。RGB是电脑设计中最直接的色彩表示方法。电脑中的24位真彩图像，就是采用RGB模型来精确记录色彩。所以，在电脑中利用RGB数值可以精确取得某种颜色。
 RGB虽然表示直接，但是R、G、B数值和色彩的三属性没有直接的联系，不能揭示色彩之间的关系。所以在进行配色设计时，RGB模型就不是那么合适了。在所有美术软件中，都可以直接设置RGB的数值。有些软件还提供了直观的"RGB三维色彩模型"来设置RGB色彩值。<br>

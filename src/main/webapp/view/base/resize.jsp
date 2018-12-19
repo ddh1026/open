@@ -98,7 +98,7 @@
                       </a>
                     </h4>
                   </div>
-                  <div id="collapseOne" class="panel-collapse collapse"><!--class="panel-collapse collapse in"中的 in 控制展开 -->
+                  <div id="collapseOne" class="panel-collapse collapse in"><!--class="panel-collapse collapse in"中的 in 控制展开 -->
                     <div class="box-body">
                   	参考资料：<a href="https://docs.opencv.org/2.4.13.6/modules/imgproc/doc/geometric_transformations.html#resize">https://docs.opencv.org/2.4.13.6/modules/imgproc/doc/geometric_transformations.html#resize</a>
                       		<br>public static void resize(Mat src, Mat dst, Size dsize, double fx, double fy, int interpolation); 各参数说明：</h4>

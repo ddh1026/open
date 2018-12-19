@@ -107,7 +107,7 @@
                       </a>
                     </h4>
                   </div>
-                  <div id="collapseOne" class="panel-collapse collapse"><!--class="panel-collapse collapse in"中的 in 控制展开 -->
+                  <div id="collapseOne" class="panel-collapse collapse in"><!--class="panel-collapse collapse in"中的 in 控制展开 -->
                     <div class="box-body">
                     <h4>参考资料：<br>
                     	<a href="http://www.opencv.org.cn/opencvdoc/2.3.2/html/doc/tutorials/imgproc/opening_closing_hats/opening_closing_hats.html#morphology-2">官网形态学进阶demo</a><br>

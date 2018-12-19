@@ -147,7 +147,7 @@
                       </a>
                     </h4>
                   </div>
-                  <div id="collapseOne" class="panel-collapse collapse"><!--class="panel-collapse collapse in"中的 in 控制展开 -->
+                  <div id="collapseOne" class="panel-collapse collapse in"><!--class="panel-collapse collapse in"中的 in 控制展开 -->
                     <div class="box-body">
                     		本demo先进行填图区域的识别，之前肯定先需要坐标点定位，目前先写死。实际中应该提前利用定位点确定坐标位置。思路如下：<br>
 							1、先进行图片预处理，由于是扫描的图片，像素渣，噪点很明显，所以先除噪。<br>

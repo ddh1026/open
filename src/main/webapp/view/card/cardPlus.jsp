@@ -88,7 +88,7 @@
                       </a>
                     </h4>
                   </div>
-                  <div id="collapseOne" class="panel-collapse collapse"><!--class="panel-collapse collapse in"中的 in 控制展开 -->
+                  <div id="collapseOne" class="panel-collapse collapse in"><!--class="panel-collapse collapse in"中的 in 控制展开 -->
                     <div class="box-body">
                     		图片是拍摄的一张常规答题卡，在此基础上进行了改进，增加了底部和侧边的标记块，用于定位答题卡各选项的坐标。识别思路如下：<br>
                     		1、图形预处理：腐蚀膨胀、二值化、高斯模糊等<br>

@@ -181,7 +181,7 @@
                       </a>
                     </h4>
                   </div>
-                  <div id="collapseOne" class="panel-collapse collapse"><!--class="panel-collapse collapse in"中的 in 控制展开 -->
+                  <div id="collapseOne" class="panel-collapse collapse in"><!--class="panel-collapse collapse in"中的 in 控制展开 -->
                     <div class="box-body">
                     <h4>
                     参考资料:<br>
@@ -231,7 +231,7 @@
                       </a>
                     </h4>
                   </div>
-                  <div id="collapseTwo" class="panel-collapse collapse">
+                  <div id="collapseTwo" class="panel-collapse collapse in">
                     <div class="box-body">
                     <h4>模板匹配方法是利用原图与模板图之间重叠的部分进行对比，来得出最近似的结果集。具体的匹配算法如下Method参数所示。Imgproc.TM_SQDIFF=0;标准平方差匹配：Imgproc.TM_SQDIFF_NORMED=1；相关性匹配：Imgproc.TM_CCORR=2；
 				                  标准相关匹配：Imgproc.TM_CCORR_NORMED=3；相关性系数匹配：Imgproc.TM_CCOEFF=4；标准相关性系数匹配：Imgproc.TM_CCOEFF_NORMED=5<br>

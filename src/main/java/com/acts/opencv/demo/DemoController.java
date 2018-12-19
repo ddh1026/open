@@ -32,6 +32,7 @@ public class DemoController extends BaseController {
 	@RequestMapping(value = "detectFace")
 	public void detectFace(HttpServletResponse response, HttpServletRequest request, String url) {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+		System.out.println("===========java.library.path:" + System.getProperty("java.library.path"));
 		logger.info("\nRunning DetectFaceDemo");
 		String resourcePath = getClass().getResource("/lbpcascade_frontalface.xml").getPath().substring(1);
 		logger.info("resourcePath============" + resourcePath);
@@ -62,6 +63,8 @@ public class DemoController extends BaseController {
 		System.out.println("Hello, OpenCV");
 		// Load the native library.
 		System.loadLibrary("opencv_java2413");
+		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+		System.out.println("===========java.library.path:" + System.getProperty("java.library.path"));
 
 	}
 }

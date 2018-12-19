@@ -97,7 +97,7 @@
                       </a>
                     </h4>
                   </div>
-                  <div id="collapseOne" class="panel-collapse collapse"><!--class="panel-collapse collapse in"中的 in 控制展开 -->
+                  <div id="collapseOne" class="panel-collapse collapse in"><!--class="panel-collapse collapse in"中的 in 控制展开 -->
                     <div class="box-body">
                       		<h4>参考资料：<br>
                       		<a href="https://docs.opencv.org/2.4.13.6/modules/imgproc/doc/miscellaneous_transformations.html#adaptivethreshold">https://docs.opencv.org/2.4.13.6/modules/imgproc/doc/miscellaneous_transformations.html#adaptivethreshold</a> <br>
