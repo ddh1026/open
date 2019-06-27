@@ -46,6 +46,7 @@ SpringMVC+AdminLTE 2+maven。考虑到之前demo测试，要么都是生成图�
 邮箱 ws01986@163.com
 QQ 434923959
 QQ群：709883689
+
 另外正在陆续实现一个拍照识别答题卡的小程序，可以微信小程序搜索“扫扫阅卷”
 ####
 ![输入图片说明](https://images.gitee.com/uploads/images/2018/1213/174404_f48cb9af_102358.png "1.png")
