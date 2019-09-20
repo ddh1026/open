@@ -141,6 +141,7 @@ desired effect
 			            <li><a href="#view/base/contours.jsp"><i class="fa fa-circle-o"></i>轮廓</a></li>
 			            <li><a href="#view/base/findtemplate.jsp"><i class="fa fa-circle-o"></i>模板查找</a></li>
 			            <li><a href="#view/base/grayHistogram.jsp"><i class="fa fa-circle-o"></i>灰度直方图</a></li>
+			            <li><a href="#view/base/fourPointTransform.jsp"><i class="fa fa-circle-o"></i>4点转换矫正</a></li>
 			          </ul>
 			        </li>
 			        

@@ -3,6 +3,8 @@ package com.acts.opencv.base;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +19,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfFloat;
 import org.opencv.core.MatOfInt;
 import org.opencv.core.MatOfPoint;
+import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
@@ -41,6 +44,8 @@ import com.google.zxing.MultiFormatReader;
 import com.google.zxing.Result;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
+
+import cn.hutool.core.util.NumberUtil;
 
 
 @Controller
@@ -1083,4 +1088,221 @@ public class BaseMethodController extends BaseController {
 	//
 	// }
 
+	
+	public static void main(String[] args) {
+		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+
+	}
+	
+	
+	@RequestMapping(value = "picTransform")
+	public void picTransform(HttpServletResponse response, String imagefile) {
+		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+		logger.info("\n 图像转换开始");
+		//我们假设我们识别的图片如样例一样有明显的边界，那我们可以用边缘检测算法将真正有效区域抽离出来，
+		//以此来提高识别准确度和识别精度
+		//先进行边缘检测
+//		String sourcePath = "d:\\test\\abc\\a.png";
+		String sourcePath = Constants.PATH + imagefile;
+		Mat source = Highgui.imread(sourcePath);
+//		Mat destination = new Mat(source.rows(), source.cols(), source.type());
+		//复制一个source作为四点转换的原图，因为source在轮廓识别时会被覆盖，建议图像处理时都将原图复制一份，
+		//因为opencv的很多算法都会更改传入的soure图片，如果不注意可能就会导致各种异常。
+		Mat orign = source.clone();
+		//为了加速图像处理，以及使我们的边缘检测步骤更加准确，我们将扫描图像的大小调整为具有500像素的高度。
+		Mat dst = source.clone();
+		//缩放比例
+		double ratio = NumberUtil.div(500, orign.height());
+		System.out.println("----------"+ratio);
+		double width = ratio*orign.width();
+		Imgproc.resize(source, dst, new Size(width,500));
+		// 灰度化,加载为灰度图显示
+		Mat gray = dst.clone();
+		Imgproc.cvtColor(dst,gray,Imgproc.COLOR_BGR2GRAY);
+		Highgui.imwrite("d:\\test\\abc\\o1.png", gray);
+		//高斯滤波,去除杂点等干扰
+		Imgproc.GaussianBlur(gray,gray, new Size(5, 5), 0);
+		//canny边缘检测算法，经过canny算法或的图像会变成二值化效果
+		Mat edges = gray.clone();
+		Imgproc.Canny(gray,edges,75, 200);
+		Highgui.imwrite("d:\\test\\abc\\o2.png", edges);
+		
+		String destPath = "d:\\test\\abc\\dst.png";
+		Mat hierarchy = new Mat(gray.rows(), gray.cols(), CvType.CV_8UC1, new Scalar(0));
+		Vector<MatOfPoint> contours = new Vector<MatOfPoint>();
+		//轮廓识别，查找外轮廓
+		Imgproc.findContours(edges, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE, new Point());
+		List<Point> listPoint = new ArrayList<>();
+		for(int i =0; i<contours.size();i++) {
+			MatOfPoint2f newPoint = new MatOfPoint2f(contours.get(i).toArray());
+			// 周长，第1个参数是轮廓，第二个参数代表是否是闭环的图形
+			double peri = 0.01 * Imgproc.arcLength(newPoint, true);
+			MatOfPoint2f approx = new MatOfPoint2f();
+//			approx.convertTo(approx, CvType.CV_32F);
+			//近似轮廓逼近，然后通过获取多边形的所有定点，如果是四个定点，就代表是矩形
+			Imgproc.approxPolyDP(newPoint,approx, peri, true);
+		    //只考虑矩形,如果近似轮廓有4个点，我们就认为已经找到了该矩形。
+		    if (approx.rows() == 4) {
+		    	//通过reshape函数将4个点取出来（4行2列的矩阵）
+		    	Mat points = approx.reshape(2, 4);
+		    	System.out.println(points.dump());
+		    	double[] point1 = points.get(0, 0);
+		    	double[] point2 = points.get(1, 0);
+		    	double[] point3 = points.get(2, 0);
+		    	double[] point4 = points.get(3, 0);
+		    	//之前因为我们已经将图片进行了缩放，所以此处要将图片尺寸还原
+		    	listPoint.add(new Point(point1[0]/ratio,point1[1]/ratio));
+		    	listPoint.add(new Point(point2[0]/ratio,point2[1]/ratio));
+		    	listPoint.add(new Point(point3[0]/ratio,point3[1]/ratio));
+		    	listPoint.add(new Point(point4[0]/ratio,point4[1]/ratio));
+		    	for (Point d : listPoint) {
+					System.out.println(d);
+				}
+		    	System.out.println("######################");
+		    	break;
+		    }
+
+		}
+		//绘制轮廓，注意是在缩放过的图片上绘制的，别在原图上画，肯定画的不对。
+		Imgproc.drawContours(dst, contours, -1, new Scalar(0, 255, 0), 2);
+		Highgui.imwrite("d:\\test\\abc\\o3.png", dst);
+		Mat resullt = fourPointTransform(orign, listPoint);
+		Highgui.imwrite(destPath, resullt);
+		// 方式2，回写页面图片流
+		try {
+			byte[] imgebyte = OpenCVUtil.covertMat2Byte1(resullt);
+			renderImage(response, imgebyte);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * py中imutils中经典的4点转换方法的java实现
+	 * @author song.wang
+	 * @date 2019年8月20日
+	 * @param source
+	 * @param listPoint
+	 * @return Mat
+	 * 
+	 * 更新日志
+	 * 2019年8月20日 song.wang 首次创建
+	 */
+	private static Mat fourPointTransform(Mat source,List<Point> listPoint) {
+	 	//获得点的顺序 
+		List<Point> newOrderList = orderPoints(listPoint);
+		for (Point point : newOrderList) {
+			System.out.println(point);
+		}
+	    //计算新图像的宽度，它将是右下角和左下角x坐标之间或右上角和左上角x坐标之间的最大距离
+		//此处的顺序别搞错0,1,2,3依次是左上[0]，右上[1]，右下[2]，左下[3]
+		Point leftTop = newOrderList.get(0);
+		Point rightTop = newOrderList.get(1);
+		Point rightBottom = newOrderList.get(2);
+		Point leftBottom = newOrderList.get(3);
+		double widthA = Math.sqrt(Math.pow(rightBottom.x-leftBottom.x, 2)
+				+Math.pow(rightBottom.y-leftBottom.y, 2));
+		double widthB = Math.sqrt(Math.pow(rightTop.x-leftTop.x, 2)
+				+Math.pow(rightTop.y-leftTop.y, 2));
+		int maxWidth = Math.max((int)widthA, (int)widthB);
+
+	    //计算新图像的高度，这将是右上角和右下角y坐标或左上角和左下角y坐标之间的最大距离，
+		//这里用到的初中数学知识点和点的距离计算(x1,y1),(x2,y2)距离=√((x2-x1)^2+(y2-y1)^2)
+		double heightA = Math.sqrt(Math.pow(rightTop.x-rightBottom.x, 2)
+				+Math.pow(rightTop.y-rightBottom.y, 2));
+		double heightB = Math.sqrt(Math.pow(leftTop.x-leftBottom.x, 2)
+				+Math.pow(leftTop.y-leftBottom.y, 2));
+		int maxHeight = Math.max((int)heightA, (int)heightB);
+		System.out.println("宽度："+maxWidth);
+		System.out.println("高度："+maxHeight);
+	    //现在我们指定目标图像的尺寸，构造目标点集以获得图像的“鸟瞰图”（即自上而下的视图），
+	    //再次指定左上角，右上角的点，右下角和左下角的顺序
+		Point dstPoint1 = new Point(0,0);
+		Point dstPoint2 = new Point(maxWidth-1,0);
+		Point dstPoint3 = new Point(maxWidth-1,maxHeight-1);
+		Point dstPoint4 = new Point(0,maxHeight-1);
+
+	    //计算透视变换矩阵rectMat原四顶点位置，dstMat目标顶点位置
+	    MatOfPoint2f rectMat = new MatOfPoint2f(leftTop,rightTop,rightBottom,leftBottom);
+	    MatOfPoint2f dstMat = new MatOfPoint2f(dstPoint1, dstPoint2, dstPoint3, dstPoint4);
+	    
+	    //opencv透视转换方法
+	    Mat transmtx = Imgproc.getPerspectiveTransform(rectMat, dstMat);
+	    //注意定义的新图像宽高设置
+	    Mat resultMat = Mat.zeros((int)maxHeight-1, (int)maxWidth-1, CvType.CV_8UC3);
+	    Imgproc.warpPerspective(source, resultMat, transmtx, resultMat.size());
+	    Highgui.imwrite("D:\\test\\abc\\t2.png", resultMat);
+
+	    //返回矫正后的图像
+	    return resultMat;
+	}
+	
+	/**
+	 * 4点排序，四个点按照左上、右上、右下、左下组织返回
+	 * @author song.wang
+	 * @date 2019年8月16日
+	 * @param listPoint
+	 * @return List<Point>
+	 * 
+	 * 更新日志
+	 * 2019年8月16日 song.wang 首次创建
+	 */
+	private static List<Point> orderPoints(List<Point> listPoint) {
+		//python中有很多关于数组的函数处理如排序、比较、加减乘除等，在这里我们使用List进行操作
+		//如numpy.argsort;numpy.argmin;numpy.argmax;sum(axis = 1);diff(pts, axis = 1)等等，有兴趣的可以查阅相关资料
+		//四个点按照左上、右上、右下、左下组织返回
+		//直接在这里添加我们的排序规则,按照x坐标轴升序排列，小的放前面
+		Collections.sort(listPoint, new Comparator<Point>() {
+			public int compare(Point arg0, Point arg1) {
+				if(arg0.x < arg1.x){
+					return  -1;
+				}else if (arg0.x> arg1.x){
+					return 1;
+				}else{
+					return  0;
+				}
+			}
+		});
+		//排序之后前2个点就是左侧的点，后2个点为右侧的点
+		//对比Y轴，y值小的是左上的点，y大的是左下的点
+		Point top_left = new Point();
+		Point bottom_left = new Point();
+		Point top_right = new Point();
+		Point bottom_right = new Point();
+
+		Point leftPoint1 = listPoint.get(0);
+		Point leftPoint2 = listPoint.get(1);
+		Point rightPoint1 = listPoint.get(2);
+		Point rightPoint2 = listPoint.get(3);
+		if(leftPoint1.y > leftPoint2.y){
+			top_left = leftPoint2;
+			bottom_left = leftPoint1;
+		}else{
+			top_left = leftPoint1;
+			bottom_left = leftPoint2;
+		}
+		//定位右侧的2个点右上和右下使用方法是毕达哥拉斯定理，就是勾股定理距离长的认为是右下角
+		//计算左上方点和右侧两个点的欧氏距离
+		//(y2-y1)^2+(x2-x1)^2 开根号
+		double rightLength1 = Math.sqrt(Math.pow((rightPoint1.y - top_left.y), 2)
+				+ Math.pow((rightPoint1.x - top_left.x), 2));
+		double rightLength2 = Math.sqrt(Math.pow((rightPoint2.y - top_left.y), 2)
+				+ Math.pow((rightPoint2.x - top_left.x), 2));
+		if(rightLength1>rightLength2){
+			//长度长的那个是右下角,短的为右上角；这个算法有一种情况会有可能出问题，比如倒梯形，但是在正常的俯角拍摄时不会出现这种情况
+			//还有一种方案是按照左侧的那种对比方案，根据y轴的高度判断。
+			top_right = rightPoint2;
+			bottom_right = rightPoint1;
+		}else{
+			top_right = rightPoint1;
+			bottom_right = rightPoint2;
+		}
+		//按照左上，右上，右下，左下的顺时针顺序排列，这点很重要，透视变换时根据这个顺序进行对应
+		List<Point> newListPoint = new ArrayList<>();
+		newListPoint.add(top_left);
+		newListPoint.add(top_right);
+		newListPoint.add(bottom_right);
+		newListPoint.add(bottom_left);
+		
+		return newListPoint;
+	}
 }
